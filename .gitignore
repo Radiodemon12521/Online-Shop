@@ -1,0 +1,9 @@
+Shop/.vs/
+Shop/Shop.API/appsettings.Development.json
+*.user
+Shop/Shop.API/bin/
+Shop/Shop.API/obj/
+Shop/Shop.Client/bin/
+Shop/Shop.Client/obj/
+Shop/Shop.Database/obj/
+Shop/Shop.Database/bin/
