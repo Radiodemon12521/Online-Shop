@@ -1,0 +1,13 @@
+services:
+  shop.client:
+    image: ${DOCKER_REGISTRY-}shopclient
+    build:
+      context: .
+      dockerfile: Shop.Client/Dockerfile
+
+  shop.api:
+    image: ${DOCKER_REGISTRY-}shopapi
+    build:
+      context: .
+      dockerfile: Shop.API/Dockerfile
+
