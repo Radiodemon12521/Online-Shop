@@ -1,96 +1,273 @@
-.page {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-main {
-    flex: 1;
-}
-
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-}
-
-.top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
+/* NAV Ч почти чЄрный, но УживойФ */
+.nav {
+    background: #0e0e0e;
+    padding: 22px 64px;
     display: flex;
     align-items: center;
+    gap: 40px;
+    justify-content: space-between;
+
 }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
-    }
-
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
-
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-@media (max-width: 640.98px) {
-    .top-row {
-        justify-content: space-between;
-    }
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        margin-left: 0;
-    }
+/* Ћќ√ќ Ч минимализм + дистанци€ */
+.logo {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    font-size: 18px;
+    color: #f3f1ed;
 }
 
-@media (min-width: 641px) {
-    .page {
-        flex-direction: row;
+    /* точка в logo как акцент */
+    .logo span {
+        color: #a88f5a;
+        margin-left: 4px;
     }
 
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
+/* ћ≈Ќё Ч убираем УкнопкиФ, делаем текст */
+.item {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.5);
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+    /* вместо box Ч тонка€ лини€ */
+    .item::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0%;
+        height: 1px;
+        background: #a88f5a;
+        transition: width 0.35s ease;
     }
 
-    .top-row {
-        position: sticky;
-        top: 0;
+    .item:hover {
+        color: #ffffff;
+    }
+
+        .item:hover::after {
+            width: 100%;
+        }
+
+    /* активный пункт */
+    .item.active {
+        color: #ffffff;
+    }
+
+        .item.active::after {
+            width: 100%;
+        }
+
+/*  ќ–«»Ќј Ч как secondary текст */
+.cart {
+    margin-left: auto;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.6);
+}
+
+/*  ј“јЋќ√ Ч чище и легче */
+
+.catalog {
+    position: relative;
+    padding: 8rem 6rem;
+    overflow: hidden;
+}
+
+    .catalog::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url('https://images.unsplash.com/photo-1769244075090-3b34c30bc6e1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3DЄ') center/cover no-repeat;
+        /* вот тут маги€ */
+        filter: brightness(1.15) contrast(1.15) saturate(1.1);
+        z-index: 0;
+    }
+
+    /* лЄгкий overlay, почти незаметный */
+    .catalog::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(243,241,236,0.35);
         z-index: 1;
     }
 
-    .top-row.auth ::deep a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
+    .catalog > * {
+        position: relative;
+        z-index: 2;
     }
 
-    .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
+
+/* бейдж Ч почти невидимый */
+.catalog-badge {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: black;
+    border: none;
 }
 
-#blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+/* «ј√ќЋќ¬ќ  Ч главный вау */
+.shop-title {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 300;
+    font-size: 48px;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    color: #141414;
+    max-width: 700px;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
+/* кнопка Ч €понский минимализм */
+.catalog button {
+    margin-top: 30px;
+    background: transparent;
+    border: 1px solid #1a1a1a;
+    padding: 10px 22px;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    transition: all 0.3s ease;
+    
+}
+
+    .catalog button:hover {
+        background: #1a1a1a;
+        color: #fff;
     }
+.buttons{
+    gap:2rem;
+    display: flex;
+}
+/* HERO SUB Ч вторичный текст, но с характером */
+.hero-sub {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    line-height: 1.8;
+    color: rgba(20, 20, 20, 0.6);
+    max-width: 520px;
+    margin-top: 20px;
+}
+
+    /* тонкий декоративный штрих (€понска€ графика) */
+    .hero-sub::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 1px;
+        background: #a88f5a;
+        margin-bottom: 16px;
+        opacity: 0.6;
+    }
+/* кнопка */
+.cart-btn {
+    background: none;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+    font-size: 18px; /* контролируем размер эмодзи */
+    line-height: 1;
+    transition: transform 0.25s ease;
+    filter: grayscale(100%) brightness(1.2);
+}
+
+    /* лЄгкий hover (дорогой subtle эффект) */
+    .cart-btn:hover {
+        transform: translateY(-1px);
+    }
+
+/* счЄтчик */
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    font-size: 10px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    color: #a88f5a;
+    letter-spacing: 0.08em;
+}
+/* “емный лакшери стиль дл€ каталога */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #3a2b2e; /* темна€ граница */
+    background-color: #1a0f12; /* глубокий графитово-черный фон */
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #f4e1d2; /* светлый кремовый дл€ текста */
+    letter-spacing: 1px;
+}
+
+.section-link {
+    font-size: 0.95rem;
+    color: #c18c78; /* теплый золотисто-красный */
+}
+
+/* —тили фильтров */
+.filter-bar {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background-color: #220d12; /* насыщенный бордовый фон */
+}
+
+.filter-chip {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid #42272b;
+    border-radius: 25px;
+    background-color: #2b141a; /* тЄмно-бордовый */
+    font-size: 0.95rem;
+    color: #f4e1d2;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+    .filter-chip:hover {
+        background-color: #3a1f25;
+        border-color: #c18c78;
+        color: #c18c78;
+    }
+
+    .filter-chip.active {
+        background-color: #c18c78; /* золотисто-красный */
+        color: #1a0f12;
+        border-color: #c18c78;
+        font-weight: 600;
+    }
+
+/* јдаптивность */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .filter-bar {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .filter-chip {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,14 @@
+﻿.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* адаптивная сетка */
+    gap: 1.5rem; /* расстояние между карточками */
+    padding: 2rem;
+    background-color: #1a0f12; /* глубокий темный фон каталога */
+}
+@media (max-width: 768px) {
+    .products {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
