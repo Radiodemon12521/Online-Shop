@@ -1,4 +1,5 @@
 using Shop.Client.Components;
+using Shop.Common;
 
 namespace Shop.Client
 {
@@ -11,6 +12,7 @@ namespace Shop.Client
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+            builder.Services.AddHttpClient<ApiClient>();
 
             var app = builder.Build();
 
@@ -22,7 +24,7 @@ namespace Shop.Client
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+          //  app.UseHttpsRedirection();
 
             app.UseStaticFiles();
             app.UseAntiforgery();

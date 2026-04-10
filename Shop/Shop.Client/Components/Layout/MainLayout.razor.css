@@ -108,10 +108,8 @@
 
 /* бейдж Ч почти невидимый */
 .catalog-badge {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: black;
-    border: none;
+    color: #f4e1d2;
+    text-shadow: 0 0 3px rgba(0,0,0,0.5);
 }
 
 /* «ј√ќЋќ¬ќ  Ч главный вау */
@@ -121,20 +119,19 @@
     font-size: 48px;
     letter-spacing: 0.05em;
     line-height: 1.4;
-    color: #141414;
-    max-width: 700px;
+    color: #f4e1d2;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
 }
 
 /* кнопка Ч €понский минимализм */
 .catalog button {
     margin-top: 30px;
     background: transparent;
-    border: 1px solid #1a1a1a;
+    border: 1px solid #f4e1d2;
     padding: 10px 22px;
     font-size: 13px;
     letter-spacing: 0.12em;
     transition: all 0.3s ease;
-    
 }
 
     .catalog button:hover {
@@ -152,9 +149,8 @@
     font-size: 14px;
     letter-spacing: 0.18em;
     line-height: 1.8;
-    color: rgba(20, 20, 20, 0.6);
-    max-width: 520px;
-    margin-top: 20px;
+    color: #f4e1d2;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5); /* м€гка€ тень */
 }
 
     /* тонкий декоративный штрих (€понска€ графика) */
@@ -270,4 +266,8 @@
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
     }
+}
+.hero-cta {
+    color: #f4e1d2;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }

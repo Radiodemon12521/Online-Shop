@@ -13,6 +13,10 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Entities", "..\Shop.Entities\Shop.Entities.csproj", "{8F6C7F55-2A49-41A8-B6E5-56F8D7978E84}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.AdminClient", "Shop.AdminClient\Shop.AdminClient.csproj", "{CC87723C-B377-41BC-9D63-A44BCB704928}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Common", "Shop.Common\Shop.Common.csproj", "{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{8F6C7F55-2A49-41A8-B6E5-56F8D7978E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F6C7F55-2A49-41A8-B6E5-56F8D7978E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F6C7F55-2A49-41A8-B6E5-56F8D7978E84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC87723C-B377-41BC-9D63-A44BCB704928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC87723C-B377-41BC-9D63-A44BCB704928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC87723C-B377-41BC-9D63-A44BCB704928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC87723C-B377-41BC-9D63-A44BCB704928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

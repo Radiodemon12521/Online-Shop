@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "shop.client": "StartDebugging",
-        "shop.api": "StartDebugging"
+        "shop.api": "StartDebugging",
+        "shop.adminclient": "StartDebugging"
       }
     }
   }

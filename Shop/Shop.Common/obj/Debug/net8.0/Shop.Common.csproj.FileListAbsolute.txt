@@ -1,0 +1,16 @@
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\bin\Debug\net8.0\Shop.Common.deps.json
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\bin\Debug\net8.0\Shop.Common.dll
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\bin\Debug\net8.0\Shop.Common.pdb
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\bin\Debug\net8.0\Shop.Entities.dll
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\bin\Debug\net8.0\Shop.Entities.pdb
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Common.csproj.AssemblyReference.cache
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Common.AssemblyInfoInputs.cache
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Common.AssemblyInfo.cs
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Common.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Common.sourcelink.json
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Com.F6B5696C.Up2Date
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Common.dll
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\refint\Shop.Common.dll
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\Shop.Common.pdb
+C:\Users\user\Documents\Online-Shop\Shop\Shop.Common\obj\Debug\net8.0\ref\Shop.Common.dll

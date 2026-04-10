@@ -1,4 +1,6 @@
 ﻿@page "/"
+@inject ApiClient apiClient
+@using Shop.Common
 @using Shop.Entities
 
 <div class="products">
@@ -12,23 +14,9 @@
 @code   
 {
     public List<Product> Products { get; set; } = new List<Product>();
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        Products= new List<Product>
-{
-    new Product { Id = Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890"), Name = "Молоко",             ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f12345678901"), Name = "Куриное филе",       ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-012345678902"), Name = "Яблоки",             ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("d4e5f6a7-b8c9-0123-defa-123456789013"), Name = "Хлеб ржаной",        ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("e5f6a7b8-c9d0-1234-efab-234567890124"), Name = "Сыр Гауда",          ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("f6a7b8c9-d0e1-2345-fabc-345678901235"), Name = "Томаты",             ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("a7b8c9d0-e1f2-3456-abcd-456789012346"), Name = "Лосось",             ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("b8c9d0e1-f2a3-4567-bcde-567890123457"), Name = "Гречка",             ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("c9d0e1f2-a3b4-5678-cdef-678901234568"), Name = "Яйца",               ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("d0e1f2a3-b4c5-6789-defa-789012345679"), Name = "Бананы",             ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("e1f2a3b4-c5d6-7890-efab-890123456780"), Name = "Говядина",           ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-    new Product { Id = Guid.Parse("f2a3b4c5-d6e7-8901-fabc-901234567891"), Name = "Макароны",           ImageSource ="https://live.staticflickr.com/4127/4966191196_ea72ec2ce5_b.jpg",Price= 200},
-};
-          return Task.CompletedTask;
+        Products = await apiClient.GetAllProducts();
+     
     }
 }

@@ -1,0 +1,11 @@
+﻿@page "/products"
+@using Shop.Common
+@inject ApiClient apiClient
+<h3>Products</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var products = await apiClient.GetAllProducts();
+    }
+}
