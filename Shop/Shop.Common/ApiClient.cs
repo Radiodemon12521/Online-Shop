@@ -22,6 +22,42 @@ namespace Shop.Common
         {
             return _client.GetAsync("/Products");
         }
+        public Task<HttpResponseMessage> Update(Product product)
+        {
+            return _client.PutAsJsonAsync("/Products/Update",product);
+        }
+        public Task<HttpResponseMessage> Create(Product product)
+        {
+            return _client.PostAsJsonAsync("/Products/Create", product);
+        }
+        public Task<HttpResponseMessage> Delete(Product product)
+        {
+            return _client.DeleteAsync($"/Products/{product.Id}");
+        }
+        public Task<List<Category>> GetAllСategories()
+        {
+            return _client.GetFromJsonAsync<List<Category>>("Categories");
+        }
+        public Task<HttpResponseMessage> TryGetAllCategories()
+        {
+            return _client.GetAsync("/Categories");
+        }
+        public Task<HttpResponseMessage> Update(Category category)
+        {
+            return _client.PutAsJsonAsync("/Categories/Update", category);
+        }
+        public Task<HttpResponseMessage> Create(Category category)
+        {
+            return _client.PostAsJsonAsync("/Categories/Create", category);
+        }
+        public Task<HttpResponseMessage> Delete(Category category)
+        {
+            return _client.DeleteAsync($"/Categories/{category.Id}");
+        }
 
+        public Task<List<Product>> ByCategory(Category category)
+        {
+            return _client.GetFromJsonAsync<List<Product>>($"/Products/ByCategory?id={category.Id}");
+        }
     }
 }

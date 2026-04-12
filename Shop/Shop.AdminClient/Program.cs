@@ -24,7 +24,7 @@ namespace Shop.AdminClient
                 app.UseHsts();
             }
 
-         //    app.UseHttpsRedirection();
+         //        app.UseHttpsRedirection();
 
             app.UseStaticFiles();
             app.UseAntiforgery();

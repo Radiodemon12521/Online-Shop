@@ -11,3 +11,7 @@ Shop/bin/
 Shop/obj/
 Shop.Entities/bin/
 Shop.Entities/obj/
+Shop/Shop.AdminClient/obj/
+Shop/Shop.AdminClient/bin/
+Shop/Shop.Common/obj/
+Shop/Shop.Common/bin/

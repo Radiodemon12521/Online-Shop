@@ -16,6 +16,7 @@
     public List<Product> Products { get; set; } = new List<Product>();
     protected override async Task OnInitializedAsync()
     {
+        await Task.Delay(2000);
         Products = await apiClient.GetAllProducts();
      
     }
