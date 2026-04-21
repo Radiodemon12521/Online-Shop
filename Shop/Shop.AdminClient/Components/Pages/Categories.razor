@@ -1,0 +1,202 @@
+﻿@page "/categories"
+@using MudBlazor
+@using Shop.Entities
+<h3>Categories</h3>
+
+<MudPaper Width="300px" Elevation="0">
+    <MudStack AlignItems="AlignItems.Center">
+        <MudTextField T="string" Label="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" TextChanged="OnTextChanged" Immediate="true" Clearable="true" ExpandOnClick="true"
+                      ExpandOnDoubleClick="true" />
+        <MudTreeView Items="@_treeItemData" @ref="_treeView" FilterFunc="FilterFunc">
+            <ItemTemplate>
+                <MudTreeViewItem @bind-Expanded="@context.Expanded" Items="@context.Children" Value="@context.Value"
+                               Visible="@context.Visible" >
+                <Content>
+                   <MudText>
+                       @context.Value.Name
+                   </MudText>
+                </Content>
+                </MudTreeViewItem>
+            </ItemTemplate>
+        </MudTreeView>
+            <MudButton OnClick="ExpandAll">Expand all</MudButton>
+            <MudButton OnClick="CollapseAll">Collapse all</MudButton>
+
+    </MudStack>
+</MudPaper>
+@code {
+    private List<TreeItemData<Category>> _treeItemData = [];
+
+    private MudTreeView<Category> _treeView;
+
+    private string _searchPhrase;
+    public bool ExpandOnClick = true;
+    public bool ExpandOnDoubleClick;    
+    private void ExpandAll()
+    {
+        SetExpanded(_treeItemData, true);
+    }
+
+    private void CollapseAll()
+    {
+        SetExpanded(_treeItemData, false);
+    }
+
+    private void SetExpanded(IEnumerable<TreeItemData<Category>> items, bool expanded)
+    {
+        foreach (var item in items)
+        {
+            item.Expanded = expanded;
+
+            if (item.Children?.Any() == true)
+                SetExpanded(item.Children, expanded);
+        }
+    }
+
+    private Task<bool> FilterFunc(TreeItemData<Category> item)
+    {
+        if (string.IsNullOrWhiteSpace(_searchPhrase))
+            return Task.FromResult(true);
+
+        bool matchSelf = item.Value?.Name?.Contains(_searchPhrase, StringComparison.OrdinalIgnoreCase) == true;
+
+        bool matchChild = item.Children?.Any(c =>
+            c.Value?.Name?.Contains(_searchPhrase, StringComparison.OrdinalIgnoreCase) == true
+        ) == true;
+
+        return Task.FromResult(matchSelf || matchChild);
+    }
+
+    public class TreeItemPresenter : TreeItemData<Category>
+    {
+
+        public TreeItemPresenter(Category category): base (category)
+        {}
+
+
+
+
+    }
+
+    protected override void OnInitialized()
+    {
+        var electronics = new Category
+        {
+            Id = Guid.NewGuid(),
+            Name = "Электроника",
+            Description = "Все виды электроники",
+        };
+
+        var iphone = new Category
+            {
+                Id = Guid.NewGuid(),
+                Name = "iphone 15Pro"
+            };
+        var samsung = new Category 
+        { Id = Guid.NewGuid(), 
+          Name = "Samsung S24" 
+        };
+
+        var macbook = new Category 
+        { 
+            Id = Guid.NewGuid(), 
+            Name = "MacBook Pro" 
+        };
+        var clothes = new Category
+        {
+            Id = Guid.NewGuid(),
+            Name = "Одежда",
+            Description = "Мужская и женская одежда",
+        };
+
+        var phones = new TreeItemPresenter(new Category
+        {
+            Id = Guid.NewGuid(),
+            Name = "Телефоны"
+        })
+        {
+            Children = new List<TreeItemData<Category>>
+    {
+        new TreeItemPresenter(iphone),
+        new TreeItemPresenter(samsung)
+    }
+        };
+
+        var laptops = new TreeItemPresenter(new Category
+        {
+            Id = Guid.NewGuid(),
+            Name = "Ноутбуки"
+        })
+        {
+            Children = new List<TreeItemData<Category>>
+    {
+        new TreeItemPresenter(macbook)
+    }
+        };
+        
+        var men = new Category
+        {
+            Id = Guid.NewGuid(),
+            Name = "Мужская одежда"
+        };
+
+        var women = new Category
+        {
+            Id = Guid.NewGuid(),
+            Name = "Женская одежда"
+        };
+
+
+        var electronicsNode = new TreeItemPresenter(electronics)
+        {
+            Expanded = true,
+            Children = new List<TreeItemData<Category>>
+            {
+                phones,
+                laptops
+            }
+        };
+
+
+        var clothesNode = new TreeItemPresenter(clothes)
+        {
+            Expanded = true,
+            Children = new List<TreeItemData<Category>>
+        {
+            new TreeItemPresenter(men),
+            new TreeItemPresenter(women)
+        }
+        };
+
+        _treeItemData = new List<TreeItemData<Category>>
+    {
+        electronicsNode,
+        clothesNode
+    };
+    }
+    
+
+
+    private async Task OnTextChanged(string searchPhrase)
+    {
+        _searchPhrase = searchPhrase;
+
+        if (!string.IsNullOrWhiteSpace(searchPhrase))
+            ExpandAll();
+
+        if (_treeView is not null)
+            await _treeView.FilterAsync();
+    }
+
+    // private Task<bool> MatchesName(TreeItemData<string> item)
+    // {
+    //     if (string.IsNullOrEmpty(item.Text))
+    //     {
+    //         return Task.FromResult(false);
+    //     }
+
+    //     return Task.FromResult(item.Text.Contains(_searchPhrase, StringComparison.OrdinalIgnoreCase));
+    // }
+
+
+}

@@ -6,15 +6,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shop.API.Controllers
 {
-        [ApiController]
-        [Route("Category")]
-    public class CategoryController:ControllerBase
+    [ApiController]
+    [Route("Category")]
+    public class CategoryController : ControllerBase
     {
         private AppDbContext _appDbContext;
-        
+
         public CategoryController(AppDbContext dbContext)
         {
-            _appDbContext= dbContext;
+            _appDbContext = dbContext;
 
         }
         [HttpGet]
@@ -22,12 +22,12 @@ namespace Shop.API.Controllers
         {
             var categories = await _appDbContext.Categories.ToListAsync();
 
-         
+
 
             return Ok(categories);
         }
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody,Required]Category category)
+        public async Task<IActionResult> Create([FromBody, Required] Category category)
         {
             _appDbContext.Categories.Add(category);
             await _appDbContext.SaveChangesAsync();
@@ -58,5 +58,18 @@ namespace Shop.API.Controllers
             return Ok();
 
         }
+        [HttpPut("{categoryId}/AddProduct/{productId}")]
+        public async Task<IActionResult> AddProduct(Guid productId, Guid categoryId)
+        {
+            var product = await _appDbContext.Products.FirstOrDefaultAsync(x => x.Id == productId);
+            if (product is null) return NotFound();
+            var category = await _appDbContext.Categories.Include(c => c.Products).FirstOrDefaultAsync(x => x.Id == categoryId);
+            if (category is null) return NotFound();
+            category.Products.Add(product);
+            await _appDbContext.SaveChangesAsync();
+            return Ok();
+        }
+        
+
     }
 }

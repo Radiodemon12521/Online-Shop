@@ -1,3 +1,4 @@
+using MudBlazor.Services;
 using Shop.AdminClient.Components;
 using Shop.Common;
 
@@ -13,7 +14,7 @@ namespace Shop.AdminClient
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddHttpClient<ApiClient>();
-
+            builder.Services.AddMudServices();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
