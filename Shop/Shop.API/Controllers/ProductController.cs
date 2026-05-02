@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.Database;
 using Shop.Entities;
+using Shop.Common.DTOs;
 using System.ComponentModel.DataAnnotations;
 
 namespace Shop.API.Controllers
@@ -45,9 +46,16 @@ namespace Shop.API.Controllers
 
         }
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody, Required] Product product)
+        public async Task<IActionResult> Create([FromBody] ProductDto request)
         {
+            var product = new Product() { 
+                Id= request.Id,
+                CategoryId=request.CategoryId,
+                Description= request.Description,
+                Name=request.Name,ImageSource=request.ImageSource,
+                Price=request.Price };
             _appDbContext.Products.Add(product);
+
             await _appDbContext.SaveChangesAsync();
             return Ok();
         }

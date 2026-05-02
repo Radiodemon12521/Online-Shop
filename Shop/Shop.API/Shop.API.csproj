@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Shop.Common\Shop.Common.csproj" />
     <ProjectReference Include="..\Shop.Database\Shop.Database.csproj" />
   </ItemGroup>
 

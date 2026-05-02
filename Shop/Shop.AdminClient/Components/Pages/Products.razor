@@ -1,97 +1,79 @@
 ﻿@page "/products"
+@using MudBlazor
 @using Shop.Common
 @using Shop.Entities
-@inject ApiClient apiClient
-<h3>Products</h3>
-<button class="product-add-button" @onclick="Create">
-    add
-</button>
 
-<div class="products">
+@inject IDialogService DialogService
+@inject ApiClient ApiClient
+
+<h3>Products</h3>
+
+<MudFab Color="Color.Primary"
+        StartIcon="@Icons.Material.Filled.Add"
+        Size="Size.Small"
+        OnClick="OpenAddDialog" />
+
+<MudGrid Class="mt-4">
     @foreach (var product in ProductsList)
     {
-        <div class="product" @onclick ="()=>Open(product)" >
-            <img src="@product.ImageSource" />
-            <p class="product-name">@product.Name</p>
-            <p class="product-price">@product.Price</p>
-            
-        </div>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Style="cursor:pointer"
+                     onclick="@(() => OpenDialog(product))">
+
+                <MudCardMedia Image="@product.ImageSource"
+                              Height="150" />
+
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">@product.Name</MudText>
+                    <MudText Typo="Typo.body2">@product.Price €</MudText>
+                </MudCardContent>
+
+            </MudCard>
+        </MudItem>
     }
-</div>
-    @if(ShowModal){
- <div class="overlay" @onclick="Close">
-        <div class="win" @onclick:stopPropagation="true">
-            <label>Название</label>
-            <input @bind="CurrentProduct.Name" />
-            <label>Цена (€)</label>
-            <input type="number" @bind="CurrentProduct.Price" />
-            <label>Ссылка на изображение</label>
-            <input @bind="CurrentProduct.ImageSource" />
-            <label>Описание</label>
-            <input @bind="CurrentProduct.Description" />
-
-            <button @onclick="Save">Сохранить</button>
-            <button class="close-button" @onclick="Close">Закрыть</button>
-            <button class="delete-button" @onclick="Delete">Удалить</button>
-        </div>
-</div>
-}
-
-
+</MudGrid>
 
 @code {
 
-    public List<Product> ProductsList { get; set; } = new List<Product>();
-    public bool ShowModal { get; set; } = false;
-    public Product CurrentProduct{ get; set; }
-    public bool IsCreate{ get; set; }
-    public async Task Initialize()
-    {
-        ProductsList = await apiClient.GetAllProducts();
-        StateHasChanged();
-    }
-    public async Task Create()
-    {
-        CurrentProduct = new Product();
-        CurrentProduct.Id = Guid.NewGuid();
-        IsCreate = true;
-        ShowModal = true;
-        StateHasChanged();
-    }
-    public async Task Delete()
-    {
-        var response = await apiClient.Delete(CurrentProduct);
-        Close();
-        await Initialize();
-    }
-    public async Task Save()
-    {
-        HttpResponseMessage responseMessage;
-        if (IsCreate)
-            responseMessage = await apiClient.Create(CurrentProduct);
-        else
-            responseMessage = await apiClient.Update(CurrentProduct);
+    public List<Product> ProductsList { get; set; } = new();
 
-        await Initialize();
-        Close();
-
-    }
-    public void Close()
-    {
-        ShowModal = false;
-        IsCreate = false;
-        StateHasChanged();
-
-    }
-    public void Open(Product product)
-    {
-        CurrentProduct = product;
-        ShowModal = true;
-        StateHasChanged();
-    }
     protected override async Task OnInitializedAsync()
     {
+        await LoadData();
+    }
 
-        await Initialize();
+    async Task LoadData()
+    {
+        ProductsList = await ApiClient.GetAllProducts();
+    }
+
+    async Task OpenDialog(Product product)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Product", product },
+            { "IsCreate", false }
+        };
+
+        var dialog = await DialogService.ShowAsync<DialogProduct>("Товар", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+            await LoadData();
+    }
+
+    async Task OpenAddDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Product", new Product { Id = Guid.NewGuid() } },
+            { "IsCreate", true }
+        };
+
+        var dialog = await DialogService.ShowAsync<DialogProduct>("Новый товар", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+            await LoadData();
     }
 }

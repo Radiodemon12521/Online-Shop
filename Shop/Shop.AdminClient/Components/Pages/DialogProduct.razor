@@ -1,0 +1,122 @@
+﻿@using Shop.Common
+@using Shop.Entities
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+
+        <MudSelect T="Guid" Label="Категория" @bind-Value="CategoryId">
+
+            <MudSelectItem Value="@Guid.Empty">Без категории</MudSelectItem>
+
+            @foreach (var cat in AllCategories)
+            {
+                <MudSelectItem Value="@cat.Id">@cat.Name</MudSelectItem>
+            }
+
+        </MudSelect>
+     
+        <MudImage Src="@Product.ImageSource" Height="200" Class="mb-4" />
+
+        @if (isEdit || IsCreate)
+        {
+            <MudTextField @bind-Value="Product.Name" Label="Название" />
+            <MudTextField @bind-Value="Product.Description" Label="Описание" />
+            <MudNumericField @bind-Value="Product.Price" Label="Цена (€)" />
+            <MudTextField @bind-Value="Product.ImageSource" Label="Ссылка на изображение" />
+        }
+        else
+        {
+            <MudText Typo="Typo.h5">@Product.Name</MudText>
+            <MudText>@Product.Description</MudText>
+            <MudText Color="Color.Primary">@Product.Price €</MudText>
+        }
+
+    </DialogContent>
+
+    <DialogActions>
+
+        @if (isEdit || IsCreate)
+        {
+            <MudButton Color="Color.Success" OnClick="Save">
+                Сохранить
+            </MudButton>
+
+            <MudButton OnClick="CancelEdit">
+                Отмена
+            </MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" OnClick="EnableEdit">
+                Редактировать
+            </MudButton>
+
+            <MudButton Color="Color.Error" OnClick="Delete">
+                Удалить
+            </MudButton>
+        }
+
+        <MudButton OnClick="Close">Закрыть</MudButton>
+
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Product Product { get; set; }
+
+    [Parameter]
+    public bool IsCreate { get; set; }
+
+    [Inject]
+    ApiClient ApiClient { get; set; }
+
+    public List<Category> AllCategories { get; set; } = new();
+    public Guid CategoryId  { get; set; }
+
+    private bool isEdit = false;
+
+    protected override void OnInitialized()
+    {
+        if (IsCreate)
+            isEdit = true;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        AllCategories = await ApiClient.GetAllCategoriesFlat();
+        CategoryId = Product.CategoryId;
+
+    }
+    void EnableEdit() => isEdit = true;
+
+    void CancelEdit() => isEdit = false;
+
+    async Task Save()
+    {
+        Product.CategoryId = CategoryId;
+        if (IsCreate)
+        {
+            Product.Id = Guid.NewGuid();
+            await ApiClient.Create(Product);
+        }
+        else
+        {
+            await ApiClient.Update(Product);
+            isEdit = false;
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    async Task Delete()
+    {
+        await ApiClient.Delete(Product);
+        MudDialog.Close(DialogResult.Ok("deleted"));
+    }
+
+    void Close() => MudDialog.Close();
+}

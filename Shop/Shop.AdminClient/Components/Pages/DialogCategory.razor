@@ -1,0 +1,127 @@
+﻿@using Shop.Common
+@using Shop.Entities
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <MudSelect Text="@Category.Parent?.Name" @bind-Value="ParentId" Placeholder="Please Select">
+            <MudSelectItem Value="@Guid.Empty">нету родителя</MudSelectItem>
+            @foreach (var cat in AllCategories  )
+            {
+                <MudSelectItem Value="@cat.Id">@cat.Name</MudSelectItem>
+            }
+        </MudSelect>
+
+   
+
+        @if (isEdit||IsCreate)
+        {
+            <MudTextField @bind-Value="Category.Name" Label="Название" />
+            <MudTextField @bind-Value="Category.Description" Label="Описание" />
+        }
+        else
+        {
+            <MudText Typo="Typo.h5">@Category.Name</MudText>
+            <MudText>@Category.Description</MudText>
+        }
+
+    </DialogContent>
+
+    <DialogActions>
+
+        @if (isEdit||IsCreate)
+        {
+            <MudButton Color="Color.Success" OnClick="Save">
+                Сохранить
+            </MudButton>
+
+            <MudButton OnClick="CancelEdit">
+                Отмена
+            </MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" OnClick="Edit">
+                Редактировать
+            </MudButton>
+
+            <MudButton Color="Color.Error" OnClick="Delete">
+                Удалить
+            </MudButton>
+        }
+        
+        <MudButton OnClick="Close">Закрыть</MudButton>
+
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public Category Category { get; set; }
+    [Parameter]
+    public bool IsCreate { get; set; }
+    [Inject] 
+    ApiClient ApiClient { get; set; }
+    public List<Category> AllCategories { get; set; } = new List<Category>();
+    private string StringValue { get; set; }
+    private bool isEdit = false;
+    private void Edit() => isEdit = true;
+    private void CancelEdit() => isEdit = false;
+    private Guid ParentId{ get; set; }
+    protected override void OnInitialized()
+    {
+        if (IsCreate)
+        {
+            isEdit = true;
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+
+        AllCategories =await ApiClient.GetAllCategoriesFlat();
+        ParentId = Category.ParentId.GetValueOrDefault();
+    }
+
+
+
+    async Task Save()
+    {
+        if (ParentId == Guid.Empty)
+        {
+            Category.ParentId = null;
+        }
+        else
+        {
+            Category.ParentId = ParentId;
+        }
+        if (IsCreate)
+        {
+            HttpResponseMessage responseMessage;
+            Category.Id = Guid.NewGuid();
+            Category.Children = new List<Category>();
+            Category.Products = new List<Product>();
+            responseMessage = await ApiClient.Create(Category);
+
+        }
+        else
+        {
+            HttpResponseMessage responseMessage;
+
+            responseMessage = await ApiClient.Update(Category);
+            isEdit = false;
+        }       
+        Close();
+    }
+
+    async Task Delete()
+    {   
+        
+        await ApiClient.Delete(Category);
+        MudDialog.Close(DialogResult.Ok("deleted"));
+        Close();
+    }
+
+    void Close() => MudDialog.Close();
+}

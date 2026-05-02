@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shop.Common.DTOs;
 using Shop.Database;
 using Shop.Entities;
 using System.ComponentModel.DataAnnotations;
@@ -17,18 +18,49 @@ namespace Shop.API.Controllers
             _appDbContext = dbContext;
 
         }
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("Flat")]
+        public async Task<IActionResult> GetAllCat()
         {
             var categories = await _appDbContext.Categories.ToListAsync();
-
+            categories = categories.Select(x => { x.Parent = null; return x; }).ToList();
 
 
             return Ok(categories);
         }
+        [HttpGet("Children")]
+        public async Task<IActionResult> GetChildren([FromQuery]Guid? parentId)
+        {
+            var categories = await _appDbContext.Categories
+                .Where(x=>x.ParentId==parentId)
+                .Select(x=>new GetCategoriesResponse()
+                {
+                    Name= x.Name,
+                    Description= x.Description,
+                    Id= x.Id,
+                    ParentId=x.ParentId  
+                })
+                .ToListAsync();
+            foreach (var category in categories)
+            {
+                category.Products = await _appDbContext.Products.Where(x => x.CategoryId == category.Id).Select(x=>new ProductDto()
+                {
+                    CategoryId= x.CategoryId,
+                    Name= x.Name,
+                    Description= x.Description,
+                    Id= x.Id,
+                    ImageSource=x.ImageSource,
+                    Price= x.Price
+                }).ToListAsync();
+            }
+            
+
+            return Ok(categories);
+            
+        }
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody, Required] Category category)
         {
+        
             _appDbContext.Categories.Add(category);
             await _appDbContext.SaveChangesAsync();
             return Ok();

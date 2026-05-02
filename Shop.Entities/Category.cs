@@ -15,6 +15,7 @@ namespace Shop.Entities
          
        public Category? Parent {  get; set; }
        public Guid? ParentId { get; set; }
+        public ICollection<Category> Children { get; set; }
 
     }
 }
