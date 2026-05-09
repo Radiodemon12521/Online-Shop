@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.AdminClient", "Shop.Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Common", "Shop.Common\Shop.Common.csproj", "{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.WASM", "Shop.WASM\Shop.WASM.csproj", "{A2577DD6-5AEB-4FD6-9049-A0DF6CD9A720}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2577DD6-5AEB-4FD6-9049-A0DF6CD9A720}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2577DD6-5AEB-4FD6-9049-A0DF6CD9A720}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2577DD6-5AEB-4FD6-9049-A0DF6CD9A720}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2577DD6-5AEB-4FD6-9049-A0DF6CD9A720}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,3 +15,5 @@ Shop/Shop.AdminClient/obj/
 Shop/Shop.AdminClient/bin/
 Shop/Shop.Common/obj/
 Shop/Shop.Common/bin/
+Shop/Shop.WASM/bin/
+Shop/Shop.WASM/obj/
