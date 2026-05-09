@@ -105,7 +105,8 @@
         }
         else
         {
-            await ApiClient.Update(Product);
+            var http = await ApiClient.Update(Product);
+            var answer= await http.Content.ReadAsStringAsync();
             isEdit = false;
         }
 

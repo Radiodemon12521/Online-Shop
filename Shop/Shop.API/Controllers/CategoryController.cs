@@ -1,84 +1,105 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.Common.DTOs;
 using Shop.Database;
 using Shop.Entities;
-using System.ComponentModel.DataAnnotations;
 
 namespace Shop.API.Controllers
 {
+
     [ApiController]
     [Route("Category")]
     public class CategoryController : ControllerBase
     {
+        private DapperContext _dapperContext;
         private AppDbContext _appDbContext;
 
-        public CategoryController(AppDbContext dbContext)
+        public CategoryController(AppDbContext dbContext, DapperContext dapperContext)
         {
             _appDbContext = dbContext;
+            _dapperContext = dapperContext;
 
         }
         [HttpGet("Flat")]
         public async Task<IActionResult> GetAllCat()
         {
-            var categories = await _appDbContext.Categories.ToListAsync();
-            categories = categories.Select(x => { x.Parent = null; return x; }).ToList();
+            using var connection = _dapperContext.CreateConnection();
 
+            var sql = @"SELECT * FROM ""Categories""";
 
+            var categories = (await connection.QueryAsync<GetCategoriesResponse>(sql)).ToList();
             return Ok(categories);
         }
+
         [HttpGet("Children")]
-        public async Task<IActionResult> GetChildren([FromQuery]Guid? parentId)
+        public async Task<IActionResult> GetChildren([FromQuery] Guid? parentId)
         {
-            var categories = await _appDbContext.Categories
-                .Where(x=>x.ParentId==parentId)
-                .Select(x=>new GetCategoriesResponse()
-                {
-                    Name= x.Name,
-                    Description= x.Description,
-                    Id= x.Id,
-                    ParentId=x.ParentId  
-                })
-                .ToListAsync();
+            using var connection = _dapperContext.CreateConnection();
+
+            var categories = (
+     await connection.QueryAsync<GetCategoriesResponse>(
+         """
+        SELECT *
+        FROM "Categories" c
+        WHERE (@parentId IS NULL AND c."ParentId" IS NULL)
+           OR c."ParentId" = @parentId
+        """,
+         new { parentId }))
+            .ToList();
+         var categoryIds = categories
+            .Select(x => x.Id)
+            .ToArray();
+            var products = (
+    await connection.QueryAsync<ProductDto>(
+        """
+        SELECT *
+        FROM "Products" p
+        WHERE p."CategoryId" = ANY(@categoryIds)
+        """,
+        new { categoryIds }))
+    .ToList();
+
+            var lookup = products.ToLookup(x => x.CategoryId);
+
             foreach (var category in categories)
             {
-                category.Products = await _appDbContext.Products.Where(x => x.CategoryId == category.Id).Select(x=>new ProductDto()
-                {
-                    CategoryId= x.CategoryId,
-                    Name= x.Name,
-                    Description= x.Description,
-                    Id= x.Id,
-                    ImageSource=x.ImageSource,
-                    Price= x.Price
-                }).ToListAsync();
+                category.Products = lookup[category.Id]
+                    .ToList();
             }
-            
-
             return Ok(categories);
-            
         }
+
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody, Required] Category category)
+        public async Task<IActionResult> Create(CreateCategoryRequest dto)
         {
-        
-            _appDbContext.Categories.Add(category);
+            var entity = new Category
+            {
+                Id = Guid.NewGuid(),
+                Name = dto.Name,
+                Description = dto.Description,
+                ParentId = dto.ParentId
+            };
+
+            _appDbContext.Categories.Add(entity);
             await _appDbContext.SaveChangesAsync();
             return Ok();
         }
-        [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody, Required] Category category)
-        {
 
-            var entity = await _appDbContext.Categories.FirstOrDefaultAsync(x => x.Id == category.Id);
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update(UpdateCategoryRequest dto)
+        {
+            var entity = await _appDbContext.Categories.FirstOrDefaultAsync(x => x.Id == dto.Id);
             if (entity is null)
                 return NotFound();
-            entity.Name = category.Name;
-            entity.Description = category.Description;
+
+            entity.Name = dto.Name;
+            entity.Description = dto.Description;
+            entity.ParentId = dto.ParentId;
 
             _appDbContext.Categories.Update(entity);
             await _appDbContext.SaveChangesAsync();
             return Ok();
-
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
@@ -101,7 +122,7 @@ namespace Shop.API.Controllers
             await _appDbContext.SaveChangesAsync();
             return Ok();
         }
-        
+
 
     }
 }

@@ -4,6 +4,7 @@ using Shop.Database;
 using Shop.Entities;
 using Shop.Common.DTOs;
 using System.ComponentModel.DataAnnotations;
+using Dapper;
 
 namespace Shop.API.Controllers
 {
@@ -11,39 +12,43 @@ namespace Shop.API.Controllers
     [Route("Products")]
     public class ProductController : ControllerBase
     {
+        private DapperContext _dapperContext;
         private AppDbContext _appDbContext;
-        public ProductController(AppDbContext dbContext)
+        public ProductController(AppDbContext dbContext, DapperContext dapperContext)
         {
+            _dapperContext = dapperContext;
             _appDbContext = dbContext;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _appDbContext.Products.ToListAsync();
-
-            //if (products.Count == 0)
-            //{
-            //    return NotFound();
-            //}
-
+            using var connection = _dapperContext.CreateConnection();
+            var sql = @"SELECT * FROM ""Products""";
+            var products = (await connection.QueryAsync<ProductDto>(sql)).ToList();
             return Ok(products);
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody, Required] Product product)
+        public async Task<IActionResult> Update(UpdateProductRequest updateProduct)
         {
+           
 
-            var entity = await _appDbContext.Products.FirstOrDefaultAsync(x => x.Id == product.Id);
+            var entity = await _appDbContext.Products.FirstOrDefaultAsync(x => x.Id == updateProduct.Id);
             if (entity is null)
                 return NotFound();
-            entity.Name = product.Name;
-            entity.Description = product.Description;
-            entity.Price = product.Price;
-            entity.ImageSource = product.ImageSource;
+
+           
+
+            entity.Name = updateProduct.Name;
+            entity.Description = updateProduct.Description;
+            entity.Price = updateProduct.Price;
+            entity.ImageSource = updateProduct.ImageSource;
+            entity.CategoryId = updateProduct.CategoryId;
+
+        
 
             _appDbContext.Products.Update(entity);
             await _appDbContext.SaveChangesAsync();
             return Ok();
-
         }
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] ProductDto request)

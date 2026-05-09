@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Entities;
-using System.Net.Http.Headers;
 
 namespace Shop.Database
 {

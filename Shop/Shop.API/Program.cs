@@ -21,6 +21,7 @@ namespace Shop.API
                 var connectionString = configuration.GetSection("ConnectionString").Value;
                 options.UseNpgsql(connectionString);
             }, ServiceLifetime.Scoped);
+            builder.Services.AddScoped<DapperContext>();
 
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
