@@ -63,5 +63,6 @@ namespace Shop.Common
         {
             return _client.GetFromJsonAsync<List<Product>>($"/Products/ByCategory?id={category.Id}");
         }
+        
     }
 }

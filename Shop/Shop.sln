@@ -5,15 +5,11 @@ VisualStudioVersion = 17.14.37111.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.API", "Shop.API\Shop.API.csproj", "{CC638548-68AB-44CD-9887-0307D77C5E88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Client", "Shop.Client\Shop.Client.csproj", "{76008E18-25FD-4C03-8C1E-496F93DE11C2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Database", "Shop.Database\Shop.Database.csproj", "{ACEFC15C-5B87-4D58-926B-FC6EE7DFC7ED}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Entities", "..\Shop.Entities\Shop.Entities.csproj", "{8F6C7F55-2A49-41A8-B6E5-56F8D7978E84}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.AdminClient", "Shop.AdminClient\Shop.AdminClient.csproj", "{CC87723C-B377-41BC-9D63-A44BCB704928}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Common", "Shop.Common\Shop.Common.csproj", "{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}"
 EndProject
@@ -29,10 +25,6 @@ Global
 		{CC638548-68AB-44CD-9887-0307D77C5E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC638548-68AB-44CD-9887-0307D77C5E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC638548-68AB-44CD-9887-0307D77C5E88}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76008E18-25FD-4C03-8C1E-496F93DE11C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76008E18-25FD-4C03-8C1E-496F93DE11C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76008E18-25FD-4C03-8C1E-496F93DE11C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76008E18-25FD-4C03-8C1E-496F93DE11C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ACEFC15C-5B87-4D58-926B-FC6EE7DFC7ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ACEFC15C-5B87-4D58-926B-FC6EE7DFC7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACEFC15C-5B87-4D58-926B-FC6EE7DFC7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,10 +37,6 @@ Global
 		{8F6C7F55-2A49-41A8-B6E5-56F8D7978E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F6C7F55-2A49-41A8-B6E5-56F8D7978E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F6C7F55-2A49-41A8-B6E5-56F8D7978E84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC87723C-B377-41BC-9D63-A44BCB704928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC87723C-B377-41BC-9D63-A44BCB704928}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC87723C-B377-41BC-9D63-A44BCB704928}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC87723C-B377-41BC-9D63-A44BCB704928}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1537D53F-A7B3-4AE2-AC8B-5C0C6D1B7E06}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,16 +1,5 @@
 services:
-  shop.client:
-    image: ${DOCKER_REGISTRY-}shopclient
-    build:
-      context: .
-      dockerfile: Shop.Client/Dockerfile
-    ports:
-     - "5025:8080"
-    networks:
-    - app-network
-    depends_on:
-    - shop.api
-
+ 
   shop.api:
     image: ${DOCKER_REGISTRY-}shopapi
     build:
@@ -52,16 +41,7 @@ services:
     networks:
       - app-network
 
-  shop.adminclient:
-    image: ${DOCKER_REGISTRY-}shopadminclient
-    build:
-      context: .
-      dockerfile: Shop.AdminClient/Dockerfile
-    networks: 
-      - app-network
-    depends_on:
-    - shop.api
-
+ 
 networks:
   app-network:
     driver: bridge

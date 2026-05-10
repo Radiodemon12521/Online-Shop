@@ -1,0 +1,111 @@
+﻿@page "/categories"
+@layout AdminLayout
+@using MudBlazor
+@using Shop.Common
+@using Shop.Entities
+
+@inject IDialogService DialogService
+@inject ApiClient ApiClient
+
+<h3>Categories</h3>
+
+<MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="OpenAddDialog" />
+<MudPaper>
+    <MudTreeView T="object" ServerData="@LoadServerData" Items="@TreeItems">
+        <ItemTemplate>
+            <MudTreeViewItem @bind-Expanded="@context.Expanded"
+                             Items="@context.Children"
+                             Value="@context.Value"
+                             Text="@context.Text"
+                             OnClick="@(() => OpenDialog(context))" />
+        </ItemTemplate>
+    </MudTreeView>
+</MudPaper>
+
+@code {
+    public List<TreeItemData<object>> TreeItems { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        var categories = await ApiClient.GetChildren(null);
+        TreeItems = categories
+            .Select(c => new TreeItemData<object>
+            {
+                Text = c.Name,
+                Value = (object)c,
+                Expandable = c.Children?.Any() == true || c.Products?.Any() == true
+
+            })
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<TreeItemData<object>>> LoadServerData(object parentValue)
+    {
+        var items = new List<TreeItemData<object>>();
+
+        if (parentValue is not Category category)
+            return items;
+
+        var children = await ApiClient.GetChildren(category.Id);
+        foreach (var child in children)
+        {
+            items.Add(new TreeItemData<object>
+            {
+                Text = child.Name,
+                Value = (object)child,
+                Expandable = child.Children?.Any() == true || child.Products?.Any() == true
+            });
+        }
+
+        if (category.Products != null)
+        {
+            items.AddRange(category.Products.Select(p => new TreeItemData<object>
+            {
+                Text = p.Name,
+                Value = (object)p,
+                Expandable = false
+            }));
+        }
+
+        return items;
+    }
+
+    async Task OpenDialog(TreeItemData<object> context)
+    {
+        if (context.Value is Product product)
+        {
+            var parameters = new DialogParameters { { "Product", product } };
+            var dialog = await DialogService.ShowAsync<DialogProduct>("Товар", parameters);
+            var result = await dialog.Result;
+            if (!result.Canceled) await LoadData();
+        }
+        else if (context.Value is Category category)
+        {
+            var parameters = new DialogParameters
+            {
+                { "Category", category },
+                { "IsCreate", false }
+            };
+            var dialog = await DialogService.ShowAsync<DialogCategory>("Категория", parameters);
+            var result = await dialog.Result;
+            if (!result.Canceled) await LoadData();
+        }
+    }
+
+    private async Task OpenAddDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            ["Category"] = new Category(),
+            ["IsCreate"] = true
+        };
+        var dialog = DialogService.Show<DialogCategory>("Новая категория", parameters);
+        var result = await dialog.Result;
+        if (!result.Canceled) await LoadData();
+    }
+}

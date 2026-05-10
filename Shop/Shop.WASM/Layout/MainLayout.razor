@@ -1,16 +1,75 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+﻿@using MudBlazor
+@inherits LayoutComponentBase
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+
+<MudThemeProvider />
+<MudPopoverProvider />
+
+
+<MudDialogProvider />
+
+
+<MudSnackbarProvider />
+<div class="shop">
+    <nav class="nav">
+
+        <!-- Логотип магазина -->
+        <div class="logo">MAISON<span>.</span></div>
+
+        <!-- Кнопки-категории для фильтрации товаров.
+             onclick="filterCat(...)" — вызывает JS-функцию фильтрации -->
+        <div class="buttons">
+            <button class="item">Всё</button>
+            <button class="item">Дом</button>
+            <button class="item">Мода</button>
+            <button class="item">Красота</button>
+            <button class="item">Техника</button>
+            <NavLink href="/admin"  class="btn btn-primary">
+                Админ панель
+            </NavLink>
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+        <!-- Кнопка корзины справа.
+             cartCount — динамически обновляется JS при добавлении товаров -->
+        <div class="nav-right">
+            <button class="cart-btn" onclick="toggleCart()">
+                🛒 <span class="cart-count" id="cartCount">0</span>
+            </button>
+        </div>
+    </nav>
+    <div class="catalog">
+
+        <!-- Текстовая часть баннера -->
+        <div class="hero-text">
+            <!-- Бейдж над заголовком (например, "Весенняя коллекция") -->
+            <div class="catalog-badge">
+                限定コレクション
+                Limited Collection
+            </div>
+            <!-- Главный заголовок -->
+            <h1 class="shop-title">
+                静かな贅沢
+                Quiet Luxury
+            </h1>
+
+            <!-- Подзаголовок / слоган -->
+            <p class="hero-sub">Здесь только настоящее</p>
+            <!-- Кнопка призыва к действию — скроллит/переключает к каталогу -->
+            <button class="hero-cta" onclick="filterCat('all')">Смотреть каталог →</button>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <div class="section-title">Каталог</div>
+        <!-- Счётчик товаров — обновляется JS при фильтрации -->
+        <div class="section-link" id="itemCount">12 товаров</div>
+    </div>
+    <div class="filter-bar">
+        <!-- sortBy('...', this) — передаёт режим сортировки и ссылку на кнопку (для смены active) -->
+        <button class="filter-chip active" onclick="sortBy('default', this)">По умолчанию</button>
+        <button class="filter-chip" onclick="sortBy('price-asc', this)">Дешевле</button>
+        <button class="filter-chip" onclick="sortBy('price-desc', this)">Дороже</button>
+        <button class="filter-chip" onclick="sortBy('sale', this)">Скидки</button>
+    </div>
+    @Body
 </div>
