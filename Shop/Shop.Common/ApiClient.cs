@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Shop.Common.DTOs;
 using Shop.Entities;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace Shop.Common
 {
@@ -63,6 +66,24 @@ namespace Shop.Common
         {
             return _client.GetFromJsonAsync<List<Product>>($"/Products/ByCategory?id={category.Id}");
         }
-        
+        public Task<HttpResponseMessage> TryByCategory(Category category)
+        {
+            return _client.GetAsync($"/Products/ByCategory?id={category.Id}");
+        }
+        public async Task<string> RegisterAsync(RegisterRequest request)
+        {
+            var response = await _client.PostAsJsonAsync("/auth/register", request);
+            if (response.IsSuccessStatusCode)
+            {
+                var token=await response.Content.ReadAsStringAsync();
+                _client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+                return token;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

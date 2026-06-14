@@ -1,5 +1,13 @@
-﻿@using MudBlazor
+﻿
+@using MudBlazor
+@using Shop.Common
+@using Shop.Entities
+@using ShopWASM
+@inject ApiClient ApiClient
 @inherits LayoutComponentBase
+@inject CartService CartService
+@inject NavigationManager Nav
+@implements IDisposable
 
 
 <MudThemeProvider />
@@ -10,66 +18,200 @@
 
 
 <MudSnackbarProvider />
+
+<MudLayout>
+  
+<MudDrawer @bind-Open="@_drawerOpen"
+           Anchor="Anchor.Left"
+           Elevation="2"
+           Variant="@DrawerVariant.Temporary"
+          style="background: #1a0505;">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6" Style="color: #f0e6d3; letter-spacing: 0.1em;">Каталог</MudText>
+    </MudDrawerHeader>
+
+    @if (_loading)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Error" />
+    }
+    else
+    {
+        <MudTreeView T="object"
+                     Items="@TreeItems"
+                     ServerData="LoadServerData"
+                     CanHover="true"
+                     CanActivate="true"
+                     Style="background: transparent; color: #f0e6d3;">
+            <ItemTemplate Context="item">
+                <MudTreeViewItem Value="@item.Value"
+                                 Text="@item.Text"
+                                 Items="@item.Children"
+                                 Expandable="@item.Expandable"
+                                 OnClick="@(() => SelectCategory(item))"
+                                 Style="color: #f0e6d3;" >
+                                 <BodyContent>
+                            @{
+                                string name = "abr";
+                                if (@context.Value is Product product) name = product.Name;
+                                if (@context.Value is Category category) name = category.Name;
+                                var categorys = context.Value as Category;
+                            }
+                        <MudButton OnClick="()=>ChangeCategory(categorys)">@name</MudButton> 
+                                   
+                                 </BodyContent>
+                             </MudTreeViewItem>
+                                 
+
+            </ItemTemplate>
+        </MudTreeView>
+    }
+</MudDrawer>
 <div class="shop">
     <nav class="nav">
 
-        <!-- Логотип магазина -->
         <div class="logo">MAISON<span>.</span></div>
 
-        <!-- Кнопки-категории для фильтрации товаров.
-             onclick="filterCat(...)" — вызывает JS-функцию фильтрации -->
+        
         <div class="buttons">
             <button class="item">Всё</button>
-            <button class="item">Дом</button>
-            <button class="item">Мода</button>
-            <button class="item">Красота</button>
-            <button class="item">Техника</button>
+            <button class="item">Тренд</button>
+            <button class="item">Акции</button>
             <NavLink href="/admin"  class="btn btn-primary">
                 Админ панель
             </NavLink>
+                <NavLink href="/register" class="item">
+                    Регистрация
+                </NavLink>
         </div>
 
-        <!-- Кнопка корзины справа.
-             cartCount — динамически обновляется JS при добавлении товаров -->
-        <div class="nav-right">
-            <button class="cart-btn" onclick="toggleCart()">
-                🛒 <span class="cart-count" id="cartCount">0</span>
+
+            <button class="cart-btn" @onclick='() => Nav.NavigateTo("/cart")'>
+                🛒 <span class="cart-count">@CartService.TotalCount</span>
             </button>
-        </div>
     </nav>
     <div class="catalog">
 
-        <!-- Текстовая часть баннера -->
+
         <div class="hero-text">
-            <!-- Бейдж над заголовком (например, "Весенняя коллекция") -->
+
             <div class="catalog-badge">
                 限定コレクション
                 Limited Collection
             </div>
-            <!-- Главный заголовок -->
+
             <h1 class="shop-title">
                 静かな贅沢
                 Quiet Luxury
             </h1>
 
-            <!-- Подзаголовок / слоган -->
             <p class="hero-sub">Здесь только настоящее</p>
-            <!-- Кнопка призыва к действию — скроллит/переключает к каталогу -->
-            <button class="hero-cta" onclick="filterCat('all')">Смотреть каталог →</button>
+
+            <button class="hero-cta" @onclick="OpenDrawer">Смотреть каталог →</button>
+
         </div>
     </div>
-
+  
     <div class="section-header">
         <div class="section-title">Каталог</div>
-        <!-- Счётчик товаров — обновляется JS при фильтрации -->
+
         <div class="section-link" id="itemCount">12 товаров</div>
     </div>
-    <div class="filter-bar">
-        <!-- sortBy('...', this) — передаёт режим сортировки и ссылку на кнопку (для смены active) -->
-        <button class="filter-chip active" onclick="sortBy('default', this)">По умолчанию</button>
-        <button class="filter-chip" onclick="sortBy('price-asc', this)">Дешевле</button>
-        <button class="filter-chip" onclick="sortBy('price-desc', this)">Дороже</button>
-        <button class="filter-chip" onclick="sortBy('sale', this)">Скидки</button>
-    </div>
-    @Body
+            <div class="filter-bar">
+                <button class="filter-chip @(CurrentSort == "price-asc" ? "active" : "")" @onclick='() => SetSort("price-asc")'>Дешевле</button>
+                <button class="filter-chip @(CurrentSort == "price-desc" ? "active" : "")" @onclick='() => SetSort("price-desc")'>Дороже</button>
+            </div>
+    <CascadingValue Value="CurrentCategory">
+            <CascadingValue Value="CurrentSort" Name="SortOrder">
+                @Body
+            </CascadingValue>
+    </CascadingValue>
 </div>
+</MudLayout>
+@code {
+    public string CurrentSort { get; set; } = "default";
+
+    private bool _drawerOpen;
+    public Category CurrentCategory{ get; set; }
+    void SetSort(string sort)
+    {
+        CurrentSort = sort;
+        StateHasChanged();
+    }
+    public void  ChangeCategory(Category category)
+    {
+        if (category is not null)
+        {
+            CurrentCategory = category;
+        }
+    }
+    protected override void OnInitialized()
+    {
+        CartService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CartService.OnChange -= StateHasChanged;
+    }
+    private async Task OpenDrawer()
+    {
+        _drawerOpen = true;
+        if (!TreeItems.Any())
+        {
+            _loading = true;
+            await LoadData();
+            _loading = false;
+        }
+    }
+
+    private bool _loading;
+    public List<TreeItemData<object>> TreeItems { get; set; } = new();
+
+    private async Task LoadData()
+    {
+        var categories = await ApiClient.GetChildren(null);
+        TreeItems = categories
+            .Select(c => new TreeItemData<object>
+            {
+                Text = c.Name,
+                Value = (object)c,
+                Expandable = c.Children?.Any() == true || c.Products?.Any() == true
+            })
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<TreeItemData<object>>> LoadServerData(object parentValue)
+    {
+        var items = new List<TreeItemData<object>>();
+        if (parentValue is not Category category)
+            return items;
+
+        var children = await ApiClient.GetChildren(category.Id);
+        foreach (var child in children)
+        {
+            items.Add(new TreeItemData<object>
+            {
+                Text = child.Name,
+                Value = (object)child,
+                Expandable = child.Children?.Any() == true || child.Products?.Any() == true
+            });
+        }
+
+        if (category.Products != null)
+        {
+            items.AddRange(category.Products.Select(p => new TreeItemData<object>
+            {
+                Text = p.Name,
+                Value = (object)p,
+                Expandable = false
+            }));
+        }
+
+        return items;
+    }
+
+    private void SelectCategory(TreeItemData<object> context)
+    {
+        _drawerOpen = false;
+    }
+}

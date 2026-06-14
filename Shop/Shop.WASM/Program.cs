@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Shop.Common;
 using MudBlazor.Services;
+using Shop.Common;
+using ShopWASM;
 namespace Shop.WASM
 {
     public class Program
@@ -11,9 +12,13 @@ namespace Shop.WASM
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
-          
-            builder.Services.AddHttpClient<ApiClient>();
+
+            builder.Services.AddTransient<CookieHandler>();
+            builder.Services.AddHttpClient<ApiClient>().AddHttpMessageHandler<CookieHandler>(); 
+
+            builder.Services.AddScoped<CartService>();
             builder.Services.AddMudServices();
+
             await builder.Build().RunAsync();
         }
     }

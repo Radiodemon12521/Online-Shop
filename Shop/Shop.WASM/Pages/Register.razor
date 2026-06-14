@@ -1,0 +1,262 @@
+﻿@page "/register"
+@layout RegistorLayout
+@inject ApiClient ApiClient
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+@using Shop.Common
+
+<div class="register-page">
+    <div class="register-header">
+        <button class="back-btn" @onclick='() => Nav.NavigateTo("/")'>← Назад</button>
+        <h2 class="register-title">Регистрация</h2>
+    </div>
+
+    <div class="register-form">
+        <div class="form-title">MAISON.</div>
+        <div class="form-subtitle">これ読んだ奴、馬鹿。· СОЗДАТЬ АККАУНТ</div>
+
+        <div class="field-group">
+            <label>Email</label>
+            <input type="email" @bind="_model.Email" placeholder="Введите email" />
+        </div>
+
+        <div class="field-group">
+            <label>Пароль</label>
+            <input type="password" @bind="_model.Password" placeholder="Введите пароль" />
+        </div>
+
+        <div class="field-group">
+            <label>Повторите пароль</label>
+            <input type="password" @bind="_model.ConfirmPassword" placeholder="Повторите пароль" />
+        </div>
+
+        <button class="register-btn" @onclick="HandleRegister" disabled="@_loading">
+            @if (_loading)
+            {
+                <span>Загрузка...</span>
+            }
+            else
+            {
+                <span>Зарегистрироваться</span>
+            }
+        </button>
+
+        <div class="register-login-link">
+            Уже есть аккаунт?
+            <a href="/login">Войти</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .register-page {
+        min-height: 100vh;
+        padding: 2rem;
+        background-image: url('https://vsthemes.org/uploads/posts/2019-03/1468224275.webp');
+        background-size: cover;
+        background-position: center top;
+        background-attachment: fixed;
+        position: relative;
+       overflow:hidden;
+    }
+
+        .register-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 2, 15, 0.55);
+            z-index: 0;
+        }
+
+    .register-header {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .back-btn {
+        background: transparent;
+        border: 1px solid rgba(220, 130, 180, 0.5);
+        color: #e8c0d8;
+        padding: 0.4rem 1rem;
+        border-radius: 2px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+        transition: all 0.25s;
+    }
+
+        .back-btn:hover {
+            border-color: rgba(220, 130, 180, 0.9);
+            color: #fff;
+            background: rgba(180, 60, 100, 0.18);
+        }
+
+    .register-title {
+        font-size: 1.4rem;
+        font-weight: 400;
+        letter-spacing: 0.15em;
+        margin: 0;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .register-form {
+        position: relative;
+        z-index: 1;
+        max-width: 420px;
+        margin: 1rem auto;
+        background: rgba(60, 15, 30, 0.55);
+        border: 1px solid rgba(220, 120, 160, 0.35);
+        border-radius: 6px;
+        padding: 2.5rem;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+    }
+
+    .form-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-align: center;
+        margin-bottom: 0.3rem;
+        color: #ffffff;
+    }
+
+    .form-subtitle {
+        text-align: center;
+        color: #d4a0b8;
+        font-size: 0.72rem;
+        letter-spacing: 0.25em;
+        margin-bottom: 2rem;
+        text-transform: uppercase;
+    }
+
+    .field-group {
+        margin-bottom: 1rem;
+    }
+
+        .field-group label {
+            display: block;
+            color: #e8c0d8;
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+        }
+
+        .field-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1.5px solid rgba(220, 140, 170, 0.6);
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.25s;
+            box-sizing: border-box;
+        }
+
+            .field-group input::placeholder {
+                color: rgba(255, 255, 255, 0.35);
+            }
+
+            .field-group input:hover {
+                border-color: rgba(220, 120, 160, 0.9);
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .field-group input:focus {
+                border-color: #ff4488;
+                background: rgba(255, 255, 255, 0.18);
+                box-shadow: 0 0 0 3px rgba(255, 68, 136, 0.2);
+            }
+
+    .register-btn {
+        width: 100%;
+        padding: 0.85rem;
+        margin-top: 0.5rem;
+        background: linear-gradient(135deg, #c0205a 0%, #e03070 100%);
+        border: none;
+        border-radius: 4px;
+        color: #ffffff;
+        font-size: 0.88rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 24px rgba(200, 40, 100, 0.45);
+    }
+
+        .register-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #d02060 0%, #f03080 100%);
+            box-shadow: 0 6px 32px rgba(220, 60, 120, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .register-login-link {
+        margin-top: 1.2rem;
+        text-align: center;
+        color: #d4b8c8;
+        font-size: 0.85rem;
+    }
+
+        .register-login-link a {
+            color: #ff7aaa;
+            text-decoration: none;
+            margin-left: 0.3rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+            .register-login-link a:hover {
+                color: #ffaace;
+            }
+</style>
+
+@code {
+    private RegisterRequest _model = new();
+    private bool _loading;
+
+    private async Task HandleRegister()
+    {
+        if (_model.Password != _model.ConfirmPassword)
+        {
+            Snackbar.Add("Пароли не совпадают", Severity.Error);
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(_model.Email) ||
+            string.IsNullOrWhiteSpace(_model.Password))
+        {
+            Snackbar.Add("Заполните все поля", Severity.Warning);
+            return;
+        }
+
+        _loading = true;
+        
+        var token = await ApiClient.RegisterAsync(_model);
+        Console.WriteLine(token);
+        _loading = false;
+
+        // if (success)
+        // {
+        //     Snackbar.Add("Аккаунт создан!", Severity.Success);
+        //     Nav.NavigateTo("/login");
+        // }
+        // else
+        // {
+        //     Snackbar.Add("Ошибка регистрации", Severity.Error);
+        // }
+    }
+}
