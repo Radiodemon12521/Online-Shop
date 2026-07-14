@@ -1,4 +1,4 @@
-﻿
+﻿@using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
 @using Shop.Common
 @using Shop.Entities
@@ -20,124 +20,133 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-  
-<MudDrawer @bind-Open="@_drawerOpen"
-           Anchor="Anchor.Left"
-           Elevation="2"
-           Variant="@DrawerVariant.Temporary"
-          style="background: #1a0505;">
-    <MudDrawerHeader>
-        <MudText Typo="Typo.h6" Style="color: #f0e6d3; letter-spacing: 0.1em;">Каталог</MudText>
-    </MudDrawerHeader>
 
-    @if (_loading)
-    {
-        <MudProgressLinear Indeterminate="true" Color="Color.Error" />
-    }
-    else
-    {
-        <MudTreeView T="object"
-                     Items="@TreeItems"
-                     ServerData="LoadServerData"
-                     CanHover="true"
-                     CanActivate="true"
-                     Style="background: transparent; color: #f0e6d3;">
-            <ItemTemplate Context="item">
-                <MudTreeViewItem Value="@item.Value"
-                                 Text="@item.Text"
-                                 Items="@item.Children"
-                                 Expandable="@item.Expandable"
-                                 OnClick="@(() => SelectCategory(item))"
-                                 Style="color: #f0e6d3;" >
-                                 <BodyContent>
+    <MudDrawer @bind-Open="@_drawerOpen"
+               Anchor="Anchor.Left"
+               Elevation="2"
+               Variant="@DrawerVariant.Temporary"
+               style="background: #1a0505;">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6" Style="color: #f0e6d3; letter-spacing: 0.1em;">Каталог</MudText>
+        </MudDrawerHeader>
+
+        @if (_loading)
+        {
+            <MudProgressLinear Indeterminate="true" Color="Color.Error" />
+        }
+        else
+        {
+            <MudTreeView T="object"
+                         Items="@TreeItems"
+                         ServerData="LoadServerData"
+                         CanHover="true"
+                         CanActivate="true"
+                         Style="background: transparent; color: #f0e6d3;">
+                <ItemTemplate Context="item">
+                    <MudTreeViewItem Value="@item.Value"
+                                     Text="@item.Text"
+                                     Items="@item.Children"
+                                     Expandable="@item.Expandable"
+                                     OnClick="@(() => SelectCategory(item))"
+                                     Style="color: #f0e6d3;">
+                        <BodyContent>
                             @{
                                 string name = "abr";
                                 if (@context.Value is Product product) name = product.Name;
                                 if (@context.Value is Category category) name = category.Name;
                                 var categorys = context.Value as Category;
                             }
-                        <MudButton OnClick="()=>ChangeCategory(categorys)">@name</MudButton> 
-                                   
-                                 </BodyContent>
-                             </MudTreeViewItem>
-                                 
+                            <MudButton OnClick="() => ChangeCategory(categorys)">@name</MudButton>
 
-            </ItemTemplate>
-        </MudTreeView>
-    }
-</MudDrawer>
-<div class="shop">
-    <nav class="nav">
+                        </BodyContent>
+                    </MudTreeViewItem>
 
-        <div class="logo">MAISON<span>.</span></div>
 
-        
-        <div class="buttons">
-            <button class="item">Всё</button>
-            <button class="item">Тренд</button>
-            <button class="item">Акции</button>
-            <NavLink href="/admin"  class="btn btn-primary">
-                Админ панель
-            </NavLink>
-                <NavLink href="/register" class="item">
+                </ItemTemplate>
+            </MudTreeView>
+        }
+    </MudDrawer>
+
+    <div class="shop">
+
+        <nav class="nav">
+
+            <div class="logo">MAISON<span>.</span></div>
+
+
+            <div class="buttons">
+                <button class="item">Всё</button>
+                <button class="item">Тренд</button>
+                <button class="item">Акции</button>
+               <AuthorizeView Roles="Admin">
+    <Authorized>
+        <NavLink href="/admin">
+            <p class="admin-btn">Админ панель</p>
+        </NavLink>
+    </Authorized>
+</AuthorizeView>
+            </div>
+            <NavLink href="/register">
+                <p class="register-link">
                     Регистрация
-                </NavLink>
+                </p>
+            </NavLink>
+
+            <div class="nav-actions">
+                <button class="cart-btn" @onclick='() => Nav.NavigateTo("/cart")'>
+                    🛒 <span class="cart-count">@CartService.TotalCount</span>
+                </button>
+            </div>
+        </nav>
+        <div class="catalog">
+
+
+            <div class="hero-text">
+
+                <div class="catalog-badge">
+                    限定コレクション
+                    Limited Collection
+                </div>
+
+                <h1 class="shop-title">
+                    静かな贅沢
+                    Quiet Luxury
+                </h1>
+
+                <p class="hero-sub">Здесь только настоящее</p>
+
+                <button class="hero-cta" @onclick="OpenDrawer">Смотреть каталог →</button>
+
+            </div>
         </div>
 
+        <div class="section-header">
+            <div class="section-title">Каталог</div>
 
-            <button class="cart-btn" @onclick='() => Nav.NavigateTo("/cart")'>
-                🛒 <span class="cart-count">@CartService.TotalCount</span>
-            </button>
-    </nav>
-    <div class="catalog">
-
-
-        <div class="hero-text">
-
-            <div class="catalog-badge">
-                限定コレクション
-                Limited Collection
-            </div>
-
-            <h1 class="shop-title">
-                静かな贅沢
-                Quiet Luxury
-            </h1>
-
-            <p class="hero-sub">Здесь только настоящее</p>
-
-            <button class="hero-cta" @onclick="OpenDrawer">Смотреть каталог →</button>
-
+            <div class="section-link" id="itemCount">12 товаров</div>
         </div>
-    </div>
-  
-    <div class="section-header">
-        <div class="section-title">Каталог</div>
-
-        <div class="section-link" id="itemCount">12 товаров</div>
-    </div>
-            <div class="filter-bar">
-                <button class="filter-chip @(CurrentSort == "price-asc" ? "active" : "")" @onclick='() => SetSort("price-asc")'>Дешевле</button>
-                <button class="filter-chip @(CurrentSort == "price-desc" ? "active" : "")" @onclick='() => SetSort("price-desc")'>Дороже</button>
-            </div>
-    <CascadingValue Value="CurrentCategory">
+        <div class="filter-bar">
+            <button class="filter-chip @(CurrentSort == "price-asc" ? "active" : "")" @onclick='() => SetSort("price-asc")'>Дешевле</button>
+            <button class="filter-chip @(CurrentSort == "price-desc" ? "active" : "")" @onclick='() => SetSort("price-desc")'>Дороже</button>
+        </div>
+        <CascadingValue Value="CurrentCategory">
             <CascadingValue Value="CurrentSort" Name="SortOrder">
                 @Body
             </CascadingValue>
-    </CascadingValue>
-</div>
+        </CascadingValue>
+    </div>
 </MudLayout>
 @code {
     public string CurrentSort { get; set; } = "default";
 
     private bool _drawerOpen;
-    public Category CurrentCategory{ get; set; }
+    public Category CurrentCategory { get; set; }
     void SetSort(string sort)
     {
         CurrentSort = sort;
         StateHasChanged();
     }
-    public void  ChangeCategory(Category category)
+    public void ChangeCategory(Category category)
     {
         if (category is not null)
         {

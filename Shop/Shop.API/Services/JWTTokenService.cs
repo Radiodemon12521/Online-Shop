@@ -23,14 +23,13 @@ namespace Shop.API.Services
             var jwtSettings = _config.GetSection("JWTTokenOptions");
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings["IssuerSigningKey"]!));
-
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, userId),
-            new Claim(ClaimTypes.Email, email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
+        new Claim(ClaimTypes.NameIdentifier, userId),
+        new Claim(ClaimTypes.Email, email),
+        new Claim(ClaimTypes.Role, role),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["ValidIssuer"],
                 audience: jwtSettings["ValidAudience"],
@@ -40,7 +39,6 @@ namespace Shop.API.Services
                 signingCredentials: new SigningCredentials(
                     key, SecurityAlgorithms.HmacSha256)
             );
-
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

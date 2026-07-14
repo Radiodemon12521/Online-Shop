@@ -272,3 +272,70 @@
     text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
 
+ 
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/*  нопка "јдмин панель" Ч тонка€ рамка в золоте, вписываетс€ в общую палитру */
+.admin-btn {
+    background: transparent !important;
+    border: 1px solid #d4b876; /* было #a88f5a, стало светлее */
+    color: #d4b876 !important;
+    padding: 8px 18px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+    .admin-btn:hover {
+        background: #d4b876;
+        color: #0e0e0e !important;
+    }
+/*  орзина Ч минималистична€, с золотым счЄтчиком */
+.cart-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.85);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cart-count {
+    background: #a88f5a;
+    color: #0e0e0e;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+}
+.register-link {
+    color: rgba(255,255,255,0.85) 
+}
+
+    .register-link:hover {
+        color: #ffffff 
+    }

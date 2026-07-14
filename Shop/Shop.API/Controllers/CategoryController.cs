@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.Common.DTOs;
@@ -69,7 +70,7 @@ namespace Shop.API.Controllers
             }
             return Ok(categories);
         }
-
+       
         [HttpPost("Create")]
         public async Task<IActionResult> Create(CreateCategoryRequest dto)
         {

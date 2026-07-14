@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shop.Common.DTOs;
 using Shop.Database;
 using Shop.Entities;
-using Shop.Common.DTOs;
 using System.ComponentModel.DataAnnotations;
-using Dapper;
 
 namespace Shop.API.Controllers
 {
@@ -27,16 +28,15 @@ namespace Shop.API.Controllers
             var products = (await connection.QueryAsync<ProductDto>(sql)).ToList();
             return Ok(products);
         }
+        [Authorize]
         [HttpPut("Update")]
         public async Task<IActionResult> Update(UpdateProductRequest updateProduct)
         {
-           
+
 
             var entity = await _appDbContext.Products.FirstOrDefaultAsync(x => x.Id == updateProduct.Id);
             if (entity is null)
                 return NotFound();
-
-           
 
             entity.Name = updateProduct.Name;
             entity.Description = updateProduct.Description;
@@ -44,7 +44,7 @@ namespace Shop.API.Controllers
             entity.ImageSource = updateProduct.ImageSource;
             entity.CategoryId = updateProduct.CategoryId;
 
-        
+
 
             _appDbContext.Products.Update(entity);
             await _appDbContext.SaveChangesAsync();
@@ -53,12 +53,15 @@ namespace Shop.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] ProductDto request)
         {
-            var product = new Product() { 
-                Id= request.Id,
-                CategoryId=request.CategoryId,
-                Description= request.Description,
-                Name=request.Name,ImageSource=request.ImageSource,
-                Price=request.Price };
+            var product = new Product()
+            {
+                Id = request.Id,
+                CategoryId = request.CategoryId,
+                Description = request.Description,
+                Name = request.Name,
+                ImageSource = request.ImageSource,
+                Price = request.Price
+            };
             _appDbContext.Products.Add(product);
 
             await _appDbContext.SaveChangesAsync();
@@ -74,8 +77,8 @@ namespace Shop.API.Controllers
             return Ok();
 
         }
-        [HttpGet("ByCategory")] 
-        public async Task<IActionResult> ByCategory([FromQuery,Required]Guid id)
+        [HttpGet("ByCategory")]
+        public async Task<IActionResult> ByCategory([FromQuery, Required] Guid id)
         {
             var products = await _appDbContext.Products.Where(x => x.CategoryId == id).ToListAsync();
             return Ok(products);

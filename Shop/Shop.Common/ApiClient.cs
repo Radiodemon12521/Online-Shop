@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Shop.Common.DTOs;
+using Shop.Common.Services;
 using Shop.Entities;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using static System.Net.WebRequestMethods;
 
 namespace Shop.Common
 {
@@ -11,11 +11,14 @@ namespace Shop.Common
     {
         private readonly IConfiguration _configuration;
         private HttpClient _client;
-        public ApiClient(HttpClient httpClient,IConfiguration configuration) 
-        { 
-            _client= httpClient;
-            _configuration= configuration;
+        private readonly IJwtService _jwtService;
+        public ApiClient(HttpClient httpClient, IConfiguration configuration, IJwtService jwtService)
+        {
+            _client = httpClient;
+            _jwtService = jwtService;
+            _configuration = configuration;
             _client.BaseAddress = new Uri(configuration.GetSection("ApiBaseAdress").Value);
+
         }
         public Task<List<Product>> GetAllProducts()
         {
@@ -27,7 +30,8 @@ namespace Shop.Common
         }
         public Task<HttpResponseMessage> Update(Product product)
         {
-            return _client.PutAsJsonAsync("/Products/Update",product);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtService.Token);
+            return _client.PutAsJsonAsync("/Products/Update", product);
         }
         public Task<HttpResponseMessage> Create(Product product)
         {
@@ -75,14 +79,61 @@ namespace Shop.Common
             var response = await _client.PostAsJsonAsync("/auth/register", request);
             if (response.IsSuccessStatusCode)
             {
-                var token=await response.Content.ReadAsStringAsync();
+                var token = await response.Content.ReadAsStringAsync();
+                _jwtService.Token= token.Trim();
                 _client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+                new AuthenticationHeaderValue("Bearer", _jwtService.Token);
                 return token;
             }
             else
             {
                 return null;
+            }
+        }
+        public async Task<bool> RefreshToken()
+        {
+            var response = await _client.GetAsync("/auth/refreshtoken");
+            if (response.IsSuccessStatusCode)
+            {
+                _jwtService.Token=(await response.Content.ReadAsStringAsync()).Trim();
+                _client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", _jwtService.Token);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public async Task<(bool Success, string Message)> Login(LoginRequest request)
+        {
+            var response = await _client.PostAsJsonAsync("/auth/login", request);
+            var message = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                _jwtService.Token = message.Trim();
+                _client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", _jwtService.Token);
+                return (true, "Успешно вошли в систему");
+            }
+
+            return (false, message);
+        }
+        public async Task<string> Logout()
+        {
+            var responce = await _client.PostAsync("/auth/logout", null);
+            if (responce.IsSuccessStatusCode)
+            {
+                _jwtService.Token = null;
+                _client.DefaultRequestHeaders.Authorization = null;
+                return "Успешно вышли из системы";
+
+            }
+            else
+            {
+                var message = await responce.Content.ReadAsStringAsync();
+                return message;
             }
         }
     }

@@ -1,0 +1,15 @@
+﻿@inject ApiClient Client
+@inject NavigationManager NavManager
+<h3>RedirectToLogin</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var success = await Client.RefreshToken();
+        if (!success)
+        {
+            NavManager.NavigateTo("/register");
+        }
+        await base.OnInitializedAsync();
+    }
+}
